@@ -9,11 +9,18 @@ const Register = () => {
     const [username, setUsername] = useState("");
 
     useEffect(() => {
-        const check = () => {
-
+        const check = async() => {
+            try {
+                const response = await axios.post("/users/auth");
+                (response.data !== "INVALID") && (window.location = "/home");
+            }
+            catch(err) {
+                console.log(err);
+            }
         }   
         check(); 
     },[]);
+
 
     const add = async() => {
         try {
@@ -28,7 +35,7 @@ const Register = () => {
     }
 
     return (
-    <div className="text-center">
+    <div className="text-center up">
     <h2> Register Your Account </h2>
     <div>
         <input 
@@ -63,7 +70,11 @@ const Register = () => {
         />
     </div>
     <div>
-        <button onClick={() => add()} className="btn btn-dark mt-3"> Register </button>
+        <button onClick={() => add()} className="btn btn-dark mt-3 mb-3"> Register </button>
+    </div>
+    <h4> OR </h4>
+    <div>
+        <button onClick={() => window.location="/"} className="btn btn-dark mt-3"> Login </button>
     </div>
     <div className="mt-3">
         <p> {message} </p>

@@ -2,18 +2,16 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
 module.exports = (req, res, next) => {
-    const { authorization } = req.headers;
-    if(!authorization) {
-        return res.status(401).json({error:"you must be logged in"});
-    }
-    const token = authorization;
+    const token = req.cookies.token;
+    if(!token) req.user = null;
     jwt.verify(token, process.env.JWT_SECRET, async(err, payload) => {
-        if(err) {
-         return res.status(401).json({error:"you must be logged in"})
+        if(err) req.user = null;
+        else 
+        {
+            const { id } = payload;
+            const user = await User.findOne({where: {id}});
+            req.user = user.dataValues;
         }
-        const { id } = payload;
-        const user = await User.findOne({where: {id}});
-        req.user = user.dataValues;
         next();
     });
 }

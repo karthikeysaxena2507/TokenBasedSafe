@@ -8,8 +8,14 @@ const Login = () => {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        const check = () => {
-
+        const check = async() => {
+            try {
+                const response = await axios.post("/users/auth");
+                (response.data !== "INVALID") && (window.location = "/home");
+            }
+            catch(err) {
+                console.log(err);
+            }
         }   
         check(); 
     },[]);
@@ -19,11 +25,7 @@ const Login = () => {
             const response = await axios.post("/users/login", {email, password})
             if(response.data === "Account Doesn't Exists") setMessage(response.data);
             else if(response.data === "Password is not correct") setMessage(response.data);
-            else 
-            {
-                localStorage.setItem("token", response.data.token);
-                window.location = "/home";
-            }
+            else window.location = "/home";
         }
         catch(err) {
             console.log(err);
@@ -31,7 +33,7 @@ const Login = () => {
     }
 
     return (
-    <div className="text-center">
+    <div className="text-center up">
     <h2> Login to Your Account </h2>
     <div>
         <input 
@@ -55,7 +57,11 @@ const Login = () => {
         />
     </div>
     <div>
-        <button onClick={() => add()} className="btn btn-dark mt-3"> Login </button>
+        <button onClick={() => add()} className="btn btn-dark mt-3 mb-3"> Login </button>
+    </div>
+    <h4> OR </h4>
+    <div>
+        <button onClick={() => window.location="/register"} className="btn btn-dark mt-3"> Register </button>
     </div>
     <div className="mt-3">
         <p> {message} </p>
