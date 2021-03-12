@@ -17,7 +17,7 @@ const Register = () => {
 
     const add = async() => {
         try {
-            const response = await axios.post("https://tokenbasedauth.herokuapp.com/users/register", {username, email, password});
+            const response = await axios.post("/users/register", {username, email, password});
             if(response.data === "Username Already Exists") setMessage(response.data);
             else if(response.data === "Email Already Exists") setMessage(response.data);
             else window.location = "/";

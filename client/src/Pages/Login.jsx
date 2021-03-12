@@ -16,7 +16,7 @@ const Login = () => {
 
     const add = async() => {
         try {
-            const response = await axios.post("https://tokenbasedauth.herokuapp.com/users/login", {email, password})
+            const response = await axios.post("/users/login", {email, password})
             if(response.data === "Account Doesn't Exists") setMessage(response.data);
             else if(response.data === "Password is not correct") setMessage(response.data);
             else 
