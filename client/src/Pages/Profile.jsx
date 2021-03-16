@@ -27,7 +27,7 @@ const Profile = () => {
                     window.location = "/";
                 }
                 renewAccessToken();
-                const interval = setInterval(() => renewAccessToken(), 10*50*1000); // 10 mins
+                const interval = setInterval(() => renewAccessToken(), 10*60*1000); // 10 mins
                 const timer = setTimeout(() => deleteRefreshToken(), 60*60*1000); // 1 hr
                 return () => {
                     clearInterval(interval);

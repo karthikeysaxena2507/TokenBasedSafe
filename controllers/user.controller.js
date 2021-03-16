@@ -2,6 +2,35 @@ const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const redis = require("../helper/index");
+const fs = require("fs");
+const path = require("path");
+
+let privateKey = fs.readFileSync(path.resolve("./private.key"), "utf-8");
+let publicKey = fs.readFileSync(path.resolve("./public.key"), "utf-8");
+
+let accessTokenSignOptions = {
+    issuer:  "KS",
+    subject:  "jwt",
+    audience:  "users",
+    expiresIn: 900,
+    algorithm:  "RS256"
+};
+
+let refreshTokenSignOptions = {
+    issuer:  "KS",
+    subject:  "jwt",
+    audience:  "users",
+    expiresIn: 3900,
+    algorithm:  "RS256"
+}
+
+let refreshTokenVerifyOptions = {
+    issuer:  "KS",
+    subject:  "jwt",
+    audience:  "users",
+    expiresIn: 3900,
+    algorithm:  ["RS256"]
+}
 
 const registerUser = async(req, res, next) => {
     try {
@@ -45,16 +74,30 @@ const loginUser = async(req, res, next) => {
                 if(!isMatch) res.json("Password is not correct");
                 else 
                 {
-                    const accessToken = jwt.sign({id: user.dataValues.id}, process.env.JWT_SECRET, {expiresIn: 900}); // 15 mins
-                    const refreshToken = jwt.sign({id: user.dataValues.id}, process.env.JWT_SECRET, {expiresIn: 3900}); // 65 mins 
-                    redis.setAccessToken(accessToken, refreshToken);
-                    redis.setRefreshToken(refreshToken);
-                    res.cookie("token", accessToken, {
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: true,
+                    const accessTokendata = {id: user.dataValues.id};
+                    jwt.sign(accessTokendata, privateKey, accessTokenSignOptions, (err, accessToken) => {
+                        if(err) console.log(err);
+                        else 
+                        {
+                            const refreshTokenData = {id: user.dataValues.id};
+                            jwt.sign(refreshTokenData, privateKey, refreshTokenSignOptions, (err, refreshToken) => {
+                                if(err) console.log(err);
+                                else 
+                                {
+                                    console.log("ACCESS TOKEN => ", accessToken);
+                                    console.log("REFRESH TOKEN => ", refreshToken);
+                                    redis.setAccessToken(accessToken, refreshToken);
+                                    redis.setRefreshToken(refreshToken);
+                                    res.cookie("token", accessToken, {
+                                        httpOnly: true,
+                                        secure: true,
+                                        sameSite: true,
+                                    });
+                                    res.json({username: user.dataValues.username, email});
+                                }
+                            });       
+                        }
                     });
-                    res.json({username: user.dataValues.username, email});
                 }
             })
             .catch((error) => {
@@ -78,7 +121,7 @@ const checkAuth = async(req, res, next) => {
             res.json({username: req.user.username, email: req.user.email});            
         }
     }
-    catch(err) {
+    catch(error) {
         res.json(next(error));
     }
 }
@@ -120,23 +163,29 @@ const renewAccessToken = async(req, res, next) => {
             console.log("OLD ACCESS TOKEN => ", accessToken);
             const refreshToken = await redis.getRefreshTokenFromAccessToken(accessToken);
             console.log("REFRESH TOKEN => ", refreshToken);
-            jwt.verify(refreshToken, process.env.JWT_SECRET, async(err, payload) => {
+            jwt.verify(refreshToken, publicKey, refreshTokenVerifyOptions, async(err, payload) => {
                 if(err) return err;
                 else 
                 {
                     const { id } = payload;
                     console.log("USER ID => ", id);
-                    const newAccessToken = jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: 900}); // 15 mins
-                    console.log("NEW ACCESS TOKEN => ", newAccessToken);
-                    redis.deleteToken(accessToken);
-                    res.clearCookie("token");
-                    redis.setAccessToken(newAccessToken, refreshToken);
-                    res.cookie("token", newAccessToken, {
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: true
+                    const accessTokendata = {id};
+                    jwt.sign(accessTokendata, privateKey, accessTokenSignOptions, (err, newAccessToken) => {
+                        if(err) console.log(err);
+                        else 
+                        {
+                            console.log("NEW ACCESS TOKEN => ", newAccessToken);
+                            redis.deleteToken(accessToken);
+                            res.clearCookie("token");
+                            redis.setAccessToken(newAccessToken, refreshToken);
+                            res.cookie("token", newAccessToken, {
+                                httpOnly: true,
+                                secure: true,
+                                sameSite: true
+                            });
+                            res.json("Successfully Renewed Access Token");
+                        }
                     });
-                    res.json("Successfully Renewed Access Token");
                 }
             });
         }
