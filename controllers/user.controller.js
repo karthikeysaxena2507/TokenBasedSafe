@@ -2,11 +2,9 @@ const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const redis = require("../helper/index");
-const fs = require("fs");
-const path = require("path");
 
-let privateKey = fs.readFileSync(path.resolve("./private.key"), "utf-8");
-let publicKey = fs.readFileSync(path.resolve("./public.key"), "utf-8");
+let privateKey = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
+let publicKey = process.env.PUBLIC_KEY.replace(/\\n/g, '\n');
 
 let accessTokenSignOptions = {
     issuer:  "KS",

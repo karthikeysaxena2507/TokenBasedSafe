@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
-const fs = require("fs");
-const path = require("path");
 
-let publicKey = fs.readFileSync(path.resolve("./public.key"), "utf-8");
+let publicKey = process.env.PUBLIC_KEY.replace(/\\n/g, '\n');
 
 let accessTokenVerifyOptions = {
     issuer:  "KS",
@@ -25,7 +23,6 @@ module.exports = (req, res, next) => {
         jwt.verify(token, publicKey, accessTokenVerifyOptions, async(err, payload) => {
             if(err)
             {
-                console.log("Error: ", err);
                 req.user = null;
             } 
             else 
