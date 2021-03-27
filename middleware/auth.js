@@ -21,10 +21,7 @@ module.exports = (req, res, next) => {
     else 
     {
         jwt.verify(token, publicKey, accessTokenVerifyOptions, async(err, payload) => {
-            if(err)
-            {
-                req.user = null;
-            } 
+            if(err) req.user = null;
             else 
             {
                 const { id } = payload;

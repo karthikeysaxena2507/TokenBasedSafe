@@ -113,7 +113,7 @@ const checkAuth = async(req, res, next) => {
     try {
         if(req.user === null) {
             res.clearCookie("token");
-            res.json("INVALID")
+            res.json("INVALID");
         }
         else {
             res.json({username: req.user.username, email: req.user.email});            

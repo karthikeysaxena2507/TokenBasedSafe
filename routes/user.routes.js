@@ -6,7 +6,7 @@ router.post("/register", authMiddleware, userCtrl.registerUser);
 
 router.post("/login", authMiddleware, userCtrl.loginUser);
 
-router.post("/auth", authMiddleware , userCtrl.checkAuth);
+router.get("/auth", authMiddleware, userCtrl.checkAuth);
 
 router.post("/logout", authMiddleware, userCtrl.logoutUser);
 

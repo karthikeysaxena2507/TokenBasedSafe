@@ -10,7 +10,8 @@ const Login = () => {
     useEffect(() => {
         const check = async() => {
             try {
-                const response = await axios.post("/users/auth");
+                const response = await axios.get("/users/auth");
+                console.log(response);
                 (response.data !== "INVALID") && (window.location = "/home");
             }
             catch(err) {

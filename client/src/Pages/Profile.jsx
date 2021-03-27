@@ -9,7 +9,7 @@ const Profile = () => {
         const check = async() => {
             try {
                 const renewAccessToken = async() => {
-                    const response = await axios.post("/users/auth");
+                    const response = await axios.get("/users/auth");
                     if(response.data === "INVALID") {
                         clearInterval(interval);
                         window.location = "/";
@@ -20,7 +20,7 @@ const Profile = () => {
                     }
                 }
                 const deleteRefreshToken = async() => {
-                    const response = await axios.post("/users/auth");
+                    const response = await axios.get("/users/auth");
                     if(response.data !== "INVALID") {
                         await axios.post("/users/logout", {username: response.data.username});
                     }
