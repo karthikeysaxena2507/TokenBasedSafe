@@ -12,4 +12,8 @@ router.post("/logout", authMiddleware, userCtrl.logoutUser);
 
 router.post("/accesstoken", authMiddleware, userCtrl.renewAccessToken);
 
+router.post("/change", authMiddleware, userCtrl.changePassword);
+
+router.post("/text", authMiddleware, userCtrl.saveText);
+
 module.exports = router;

@@ -123,7 +123,8 @@ const checkAuth = async(req, res, next) => {
             res.json("INVALID");
         }
         else {
-            res.json({username: req.user.username, email: req.user.email});            
+            const refreshToken = await redis.getRefreshTokenFromAccessToken(req.accessToken);
+            res.json({username: req.user.username, email: req.user.email, accessToken: req.accessToken, refreshToken});            
         }
     }
     catch(error) {
@@ -135,8 +136,8 @@ const logoutUser = async(req, res, next) => {
     try {
         console.log("MIDDLEWARE USERNAME => ", req.user.username);
         console.log("WEBSITE USERNAME => ", req.body.username);
-        const user = req.user.username;
-        if(user === null || user !== req.body.username) {
+        const user = req.user;
+        if(user === null || user.username !== req.body.username) {
             res.status(401).json({Error: "You Are Not Logged In"});
         }
         else {
@@ -159,8 +160,8 @@ const renewAccessToken = async(req, res, next) => {
     try {
         console.log("MIDDLEWARE USERNAME => ", req.user.username);
         console.log("WEBSITE USERNAME => ", req.body.username);
-        const user = req.user.username;
-        if(user === null || user !== req.body.username || user === undefined) {
+        const user = req.user;
+        if(user === null || user.username !== req.body.username || user === undefined) {
             res.status(401).json({Error: "You Are Not Logged In"});
         }
         else {
@@ -188,7 +189,7 @@ const renewAccessToken = async(req, res, next) => {
                                 secure: true,
                                 sameSite: true
                             });
-                            res.json("Successfully Renewed Access Token");
+                            res.json({accessToken: newAccessToken});
                         }
                     });
                 }
@@ -200,4 +201,62 @@ const renewAccessToken = async(req, res, next) => {
     }
 }
 
-module.exports = { registerUser, loginUser, checkAuth, logoutUser, renewAccessToken }
+const changePassword = async(req, res, next) => {
+    try {
+        const user = req.user;
+        if(user === null || user.username !== req.body.username || user === undefined) {
+            res.status(401).json({Error: "You Are Not Logged In"});
+        }
+        else {
+            let { username, newPassword } = req.body;
+            newPassword = helper.sanitize(newPassword);
+            let existingUser = await User.findOne({where: {username}});
+            bcrypt.genSalt(10, (err, salt) => {
+                if(!err) 
+                {
+                    bcrypt.hash(newPassword, salt, async(err, hash) => {
+                        if(err) res.json(next(err));
+                        else 
+                        {
+                            existingUser.password = hash;
+                            existingUser.save()
+                            .then((response) => {
+                                res.json(response);
+                            })
+                        }
+                    });
+                }
+            });
+            res.json("Password Changed Successfully");
+        }
+    }
+    catch(err) {
+        console.log(next(err));
+    }
+}
+
+const saveText = async(req, res, next) => {
+    try {
+        const user = req.user;
+        if(user === null || user.username !== req.body.username || user === undefined) {
+            res.status(401).json({Error: "You Are Not Logged In"});
+        }
+        else {
+            let text = helper.sanitize(req.body.text);
+            res.json(text);
+        }
+    }
+    catch(err) {
+        console.log(next(err));
+    }
+}
+
+module.exports = { 
+    registerUser, 
+    loginUser, 
+    checkAuth, 
+    logoutUser, 
+    renewAccessToken, 
+    changePassword, 
+    saveText 
+}

@@ -27,6 +27,7 @@ module.exports = (req, res, next) => {
                 const { id } = payload;
                 const user = await User.findOne({where: {id}});
                 req.user = user.dataValues;
+                req.accessToken = token;
             }
             next();
         });
