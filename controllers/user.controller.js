@@ -187,8 +187,8 @@ const renewAccessToken = async(req, res, next) => {
                             redis.setAccessToken(newAccessToken, refreshToken);
                             res.cookie("token", newAccessToken, {
                                 httpOnly: true,
-                                secure: true,
-                                sameSite: true
+                                sameSite: 'None',
+                                secure: true
                             });
                             res.json({accessToken: newAccessToken});
                         }
