@@ -95,7 +95,7 @@ const loginUser = async(req, res, next) => {
                                     redis.setRefreshToken(refreshToken);
                                     res.cookie("token", accessToken, {
                                         httpOnly: true,
-                                        sameSite: 'None',
+                                        sameSite: 'Strict',
                                         secure: true
                                     });
                                     res.json({username: user.dataValues.username, email});
@@ -186,7 +186,7 @@ const renewAccessToken = async(req, res, next) => {
                             redis.setAccessToken(newAccessToken, refreshToken);
                             res.cookie("token", newAccessToken, {
                                 httpOnly: true,
-                                sameSite: 'None',
+                                sameSite: 'Strict',
                                 secure: true
                             });
                             res.json({accessToken: newAccessToken});
@@ -205,12 +205,12 @@ const changePassword = async(req, res, next) => {
     try {
         const user = req.user;
         if(user === null || user.username !== req.body.username || user === undefined) {
-            res.json(user);
+            res.status(401).json({Error: "You Are Not Logged In"});
         }
         else {
-            let { username, newPassword } = req.body;
+            let { newPassword } = req.body;
             newPassword = helper.sanitize(newPassword);
-            let existingUser = await User.findOne({where: {username}});
+            let existingUser = await User.findOne({where: {username: user.username}});
             bcrypt.genSalt(10, (err, salt) => {
                 if(!err) 
                 {
