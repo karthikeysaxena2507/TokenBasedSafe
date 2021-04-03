@@ -205,11 +205,10 @@ const renewAccessToken = async(req, res, next) => {
 const changePassword = async(req, res, next) => {
     try {
         const user = req.user;
-        if(user === null || user.username !== req.body.username || user === undefined) {
-            res.status(401).json({Error: "You Are Not Logged In"});
-        }
-        else {
-            console.log(username, newPassword);
+        // if(user === null || user.username !== req.body.username || user === undefined) {
+        //     res.status(401).json({Error: "You Are Not Logged In"});
+        // }
+        // else {
             let { username, newPassword } = req.body;
             newPassword = helper.sanitize(newPassword);
             let existingUser = await User.findOne({where: {username}});
@@ -229,11 +228,12 @@ const changePassword = async(req, res, next) => {
                     });
                 }
             });
-            res.json("Password Changed Successfully");
-        }
+            res.json(user);
+            // res.json("Password Changed Successfully");
+        // }
     }
     catch(err) {
-        console.log(next(err));
+        res.json(next(err));
     }
 }
 
@@ -249,7 +249,7 @@ const saveText = async(req, res, next) => {
         }
     }
     catch(err) {
-        console.log(next(err));
+        res.json(next(err));
     }
 }
 
