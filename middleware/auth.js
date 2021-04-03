@@ -12,7 +12,6 @@ let accessTokenVerifyOptions = {
 };
 
 module.exports = (req, res, next) => {
-    console.log(req.cookies);
     const token = req.cookies.token;
     if(!token)
     {

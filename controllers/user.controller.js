@@ -95,7 +95,7 @@ const loginUser = async(req, res, next) => {
                                     redis.setRefreshToken(refreshToken);
                                     res.cookie("token", accessToken, {
                                         httpOnly: true,
-                                        sameSite: 'Strict',
+                                        sameSite: 'None',
                                         secure: true
                                     });
                                     res.json({username: user.dataValues.username, email});
@@ -186,7 +186,7 @@ const renewAccessToken = async(req, res, next) => {
                             redis.setAccessToken(newAccessToken, refreshToken);
                             res.cookie("token", newAccessToken, {
                                 httpOnly: true,
-                                sameSite: 'Strict',
+                                sameSite: 'None',
                                 secure: true
                             });
                             res.json({accessToken: newAccessToken});
@@ -227,7 +227,7 @@ const changePassword = async(req, res, next) => {
                     });
                 }
             });
-            res.json(user);
+            res.json(req.cookies);
             // res.json("Password Changed Successfully");
         // }
     }
