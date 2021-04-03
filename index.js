@@ -10,7 +10,10 @@ const app = express();
 // app.use(cors({
 //     origin: "https://token-based-auth.herokuapp.com/"
 // }));
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 app.use(express.json());
 app.use(session({secret: process.env.SESSION_SECRET, resave: true, saveUninitialized:true}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
