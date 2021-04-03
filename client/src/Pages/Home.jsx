@@ -17,11 +17,12 @@ const Home = () => {
             try {
                 const renewAccessToken = async() => {
                     const response = await axios.get("/users/auth");
+                    console.log(response.data);
                     setAccessToken(response.data.accessToken);
                     setRefreshToken(response.data.refreshToken);
                     if(response.data === "INVALID") {
                         clearInterval(interval);
-                        window.location = "/";
+                        // window.location = "/";
                     }
                     else {
                         setMessage("Changing Access Token ...");
@@ -36,10 +37,10 @@ const Home = () => {
                     if(response.data !== "INVALID") {
                         await axios.post("/users/logout", {username: response.data.username});
                     }
-                    window.location = "/";
+                    // window.location = "/";
                 }
                 renewAccessToken();
-                const interval = setInterval(() => renewAccessToken(), 10*1000); // 10 secs
+                const interval = setInterval(() => renewAccessToken(), 60*10*1000); // 10 secs
                 const timer = setTimeout(() => deleteRefreshToken(), 60*60*1000); // 1 hr
                 return () => {
                     clearInterval(interval);

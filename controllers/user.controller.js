@@ -95,8 +95,10 @@ const loginUser = async(req, res, next) => {
                                     redis.setRefreshToken(refreshToken);
                                     res.cookie("token", accessToken, {
                                         httpOnly: true,
-                                        secure: true,
-                                        sameSite: 'strict',
+                                        sameSite: 'None',
+                                        secure: true
+                                        // sameSite: 'None'
+                                        // sameSite: 'strict',
                                     });
                                     res.json({username: user.dataValues.username, email});
                                 }
@@ -208,6 +210,7 @@ const changePassword = async(req, res, next) => {
             res.status(401).json({Error: "You Are Not Logged In"});
         }
         else {
+            console.log(username, newPassword);
             let { username, newPassword } = req.body;
             newPassword = helper.sanitize(newPassword);
             let existingUser = await User.findOne({where: {username}});
