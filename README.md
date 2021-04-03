@@ -6,5 +6,5 @@
 * The front end is built using Reactjs with react hooks for state management.
 * Used MySql database for storing and managing user data and sequelize ORM for querying database.
 * The app is deployed on heroku.
-*  
+  
 ### [LIVE VERSION](https://token-based-auth.herokuapp.com/)
