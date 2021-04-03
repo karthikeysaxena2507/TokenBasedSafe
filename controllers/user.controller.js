@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const redis = require("../redis/index");
 const helper = require("../helper/index");
+const { Cookie } = require("express-session");
 
 let privateKey = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
 let publicKey = process.env.PUBLIC_KEY.replace(/\\n/g, '\n');
@@ -94,8 +95,8 @@ const loginUser = async(req, res, next) => {
                                     redis.setAccessToken(accessToken, refreshToken);
                                     redis.setRefreshToken(refreshToken);
                                     res.cookie("token", accessToken, {
-                                        httpOnly: false,
-                                        sameSite: 'strict',
+                                        httpOnly: true,
+                                        sameSite: 'None',
                                         secure: true
                                     });
                                     res.json({username: user.dataValues.username, email});
