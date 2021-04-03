@@ -94,11 +94,9 @@ const loginUser = async(req, res, next) => {
                                     redis.setAccessToken(accessToken, refreshToken);
                                     redis.setRefreshToken(refreshToken);
                                     res.cookie("token", accessToken, {
-                                        httpOnly: true,
-                                        sameSite: 'None',
+                                        httpOnly: false,
+                                        sameSite: 'strict',
                                         secure: true
-                                        // sameSite: 'None'
-                                        // sameSite: 'strict',
                                     });
                                     res.json({username: user.dataValues.username, email});
                                 }
