@@ -205,7 +205,7 @@ const changePassword = async(req, res, next) => {
     try {
         const user = req.user;
         if(user === null || user.username !== req.body.username || user === undefined) {
-            res.status(401).json({Error: "You Are Not Logged In"});
+            res.json(user);
         }
         else {
             let { username, newPassword } = req.body;
