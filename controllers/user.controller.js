@@ -96,7 +96,7 @@ const loginUser = async(req, res, next) => {
                                     res.cookie("token", accessToken, {
                                         httpOnly: true,
                                         sameSite: 'Strict',
-                                        // secure: true
+                                        secure: true
                                     });
                                     res.json({username: user.dataValues.username, email});
                                 }
@@ -187,7 +187,7 @@ const renewAccessToken = async(req, res, next) => {
                             res.cookie("token", newAccessToken, {
                                 httpOnly: true,
                                 sameSite: 'Strict',
-                                // secure: true
+                                secure: true
                             });
                             res.json({accessToken: newAccessToken});
                         }
