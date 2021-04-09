@@ -4,6 +4,7 @@ import Logout from "../Components/Logout";
 import Data from "../Components/Data";
 import Heading from "../Components/Heading";
 import Button from "../Components/Button";
+const helper = require("../helper/index");
 
 const Xss = () => {
 
@@ -62,7 +63,7 @@ const Xss = () => {
             setTextMessage("Sending ...");
             const response = await axios.post("/users/text", {username, text});
             setTextMessage("");
-            setHtmlText(text);
+            setHtmlText(helper.sanitize(text));
             setSavedText(response.data);
         }
         catch(err) {
