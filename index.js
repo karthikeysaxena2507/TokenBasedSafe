@@ -7,6 +7,9 @@ const session = require('express-session');
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+/**
+ * USING ALL MIDDLEWARES
+ */
 app.use(cors({
     origin: true,
     credentials: true
@@ -17,6 +20,9 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 const userRoutes = require("./routes/user.routes");
 app.use("/users", userRoutes);
 
+/**
+ * CHECKING THE MODE OF WEB APPLICATION
+ */
 if(process.env.NODE_ENV === "production") {
     app.use(express.static("client/build"));
     const path = require("path");
@@ -25,6 +31,9 @@ if(process.env.NODE_ENV === "production") {
     });
 };
 
+/**
+ *  CREATING A BACKEND SERVER
+ * */ 
 sequelize.sync()
 .then(() => {
     app.listen(PORT, () => {

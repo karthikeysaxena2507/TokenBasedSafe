@@ -31,6 +31,12 @@ let refreshTokenVerifyOptions = {
     algorithm:  ["RS256"]
 }
 
+/**
+ * REGISTERING A USER INTO THE DATABASE
+ * @param {Object} req 
+ * @param {Obejct} res 
+ * @param {Function} next 
+ */
 const registerUser = async(req, res, next) => {
     try {
         let {username, email, password} = req.body;
@@ -66,6 +72,12 @@ const registerUser = async(req, res, next) => {
     }
 }
 
+/**
+ * LOGGING IN THE USER
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ */
 const loginUser = async(req, res, next) => {
     try {
         let { email, password } = req.body;
@@ -116,6 +128,12 @@ const loginUser = async(req, res, next) => {
     }
 }
 
+/**
+ * CHECKING THE AUTHENTICATION STATUS OF A USER
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ */
 const checkAuth = async(req, res, next) => {
     try {
         if(req.user === null) {
@@ -132,6 +150,12 @@ const checkAuth = async(req, res, next) => {
     }
 }
 
+/**
+ * LOGGIN OUT THE USER
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ */
 const logoutUser = async(req, res, next) => {
     try {
         console.log("MIDDLEWARE USERNAME => ", req.user.username);
@@ -156,6 +180,12 @@ const logoutUser = async(req, res, next) => {
     }
 }
 
+/**
+ * CREATING A NEW ACCESS TOKEN FROM EXISTING REFRESH TOKEN 
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ */
 const renewAccessToken = async(req, res, next) => {
     try {
         console.log("MIDDLEWARE USERNAME => ", req.user.username);
@@ -201,6 +231,12 @@ const renewAccessToken = async(req, res, next) => {
     }
 }
 
+/**
+ * FUNCTION TO UPDATE PASSWORD IN DATABASE
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ */
 const changePassword = async(req, res, next) => {
     try {
         const user = req.user;
@@ -235,6 +271,12 @@ const changePassword = async(req, res, next) => {
     }
 }
 
+/**
+ * FUNCTION TO SAVE TEXT INTO DATABASE
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next 
+ */
 const saveText = async(req, res, next) => {
     try {
         const user = req.user;

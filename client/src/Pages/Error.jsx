@@ -2,6 +2,7 @@ import React from "react";
 
 const Error = () => {
 
+    // RETURNING DATA OF COMPONENT ON PAGE
     return (
     <div className="text-center up">
         <h1> Error 404: Page Not Found </h1>

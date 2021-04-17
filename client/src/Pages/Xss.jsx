@@ -8,6 +8,7 @@ const helper = require("../helper/index");
 
 const Xss = () => {
 
+    // CREATING OUR STATE VARIABLES
     const [username, setUsername] = useState("");
     const [accessToken, setAccessToken] = useState("");
     const [refreshToken, setRefreshToken] = useState("");
@@ -17,6 +18,7 @@ const Xss = () => {
     const [htmlText, setHtmlText] = useState("");
     const [savedText, setSavedText] = useState("");
 
+    // USE-EFFECT REACT HOOK TO CHECK AUTH STATUS AND GET DATA
     useEffect(() => {
         const check = async() => {
             try {
@@ -58,6 +60,7 @@ const Xss = () => {
         check(); 
     },[]);
 
+    // FUNCTION TO SEND DATA TO BACKEND
     const sendText = async() => {
         try {
             setTextMessage("Sending ...");
@@ -71,6 +74,7 @@ const Xss = () => {
         }
     }
     
+    // RETURNING DATA OF COMPONENT ON PAGE
     return (
     <div className="text-center up ml-5 mr-5">
         <Heading content = "XSS Attack" />
